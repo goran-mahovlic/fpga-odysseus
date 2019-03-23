@@ -69,9 +69,13 @@ hvsync_generator hvsync_gen(
 
 wire [15:0] pixin;
 
-wire [7:0] R = { pixin[7:3] };
-wire [7:0] G = { pixin[2:0], pixin[15:13] };
-wire [7:0] B = { pixin[12:8] };
+//wire [7:0] R = { pixin[3:7], 3'b000};
+//wire [7:0] G = { pixin[15:13], pixin[0:2], 2'b00};
+//wire [7:0] B = { pixin[8:12] , 2'b00};
+
+wire [7:0] R = { pixin[15:11], 3'b000};
+wire [7:0] G = { pixin[10:5], 2'b00};
+wire [7:0] B = { pixin[4:0] , 3'b000};
 
 reg [15:0] pixout;
 reg [7:0] xout;
