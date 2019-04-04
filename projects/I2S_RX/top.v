@@ -26,9 +26,30 @@ pll_inst
 wire data_is_ready; //not used
 
 reg [3:0] audio_data_out;
+reg [3:0] audio_data_buff_out;
 
-assign audio_r = audio_data_out;
-assign audio_l = audio_data_out;
+reg [127:0] cnt = 0;
+wire we;
+assign we = ~btn[1];
+
+//assign audio_r = audio_data_buff_out;
+//assign audio_l = audio_data_buff_out;
+//assign audio_r = audio_data_out;
+//assign audio_l = audio_data_out;
+assign audio_l = btn[1] ? audio_data_buff_out:audio_data_out;
+assign audio_r = btn[1] ? audio_data_buff_out:audio_data_out;
+
+wire [127:0] raddr = cnt;
+wire [127:0] waddr = cnt;
+
+databuff databuff_inst(
+  .clk(mic_clk),
+  .raddr(cnt),
+  .waddr(cnt),
+  .we(we),
+  .datain(audio_data_out),
+  .dataout(audio_data_buff_out)
+);
 
 i2s_mic
 #(
@@ -43,5 +64,17 @@ i2s_mic_inst(
   .data_ready(data_is_ready),
   .data_out(audio_data_out)
   );
+
+//assign led = cnt[23:16];
+
+  always @ (posedge mic_clk)
+  	begin
+  		// on negative edge of audio_clk data is ready
+      if (we)
+  		  cnt <= cnt + 1;
+      else
+        cnt <= cnt - 1;
+  		// colect data from second microphone -- currently ignore
+  	end
 
 endmodule
