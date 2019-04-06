@@ -4,7 +4,7 @@ module i2s_mic
 )
 (
     input wire standard_clk, // 2MHz (standard mode)
-		input wire ultrasonic_clk, // 4MHz (standard mode)
+	input wire ultrasonic_clk, // 4MHz (ultrasonic mode)
 		input wire [6:0] btn,
 		input wire data_in,  // data from microphone
 		output wire mic_clk_out,
