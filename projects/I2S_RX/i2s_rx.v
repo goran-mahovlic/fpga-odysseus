@@ -19,12 +19,14 @@ wire audio_clk;
 assign audio_clk = btn[3] ? ultrasonic_clk:standard_clk;
 
 // return curently used clock - so we can send it to microphone
-assign mic_clk_out = audio_clk;
+assign mic_clk_out = ~audio_clk;
 
 wire neg_clk;
-assign neg_clk = ~audio_clk;
+assign neg_clk = audio_clk;
 reg [size-1:0] data;
+reg [size-1:0] smplcnt;
 
+assign data_ready = smplcnt[size-1];
 // switch case for different modes of microphone
 // for now we can just use slower clock and standard mode (2MHz)
 
@@ -32,13 +34,15 @@ always @ (posedge audio_clk)
 	begin
 		// collect data when CLK is high
 		data <= {data[size-2:0], data_in};
+		smplcnt <= smplcnt + 1;
   end
 
 always @ (posedge neg_clk)
 	begin
-		// on negative edge of audio_clk data is ready
-		data_out <= data;
-		// colect data from second microphone -- currently ignore
+		// if we got all samples data send data
+		//if(smplcnt[size-1])
+		//	begin
+				data_out <= data;
+	 //		end
 	end
-
 endmodule
