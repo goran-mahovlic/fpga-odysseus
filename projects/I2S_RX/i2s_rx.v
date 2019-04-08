@@ -24,9 +24,9 @@ assign mic_clk_out = ~audio_clk;
 wire neg_clk;
 assign neg_clk = audio_clk;
 reg [size-1:0] data;
-reg [size-1:0] smplcnt;
+reg [size-1:0] smplcnt = 0;
 
-assign data_ready = smplcnt[size-1];
+assign data_ready = &smplcnt;
 // switch case for different modes of microphone
 // for now we can just use slower clock and standard mode (2MHz)
 
